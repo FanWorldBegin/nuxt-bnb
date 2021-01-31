@@ -17,10 +17,14 @@ export default {
 	},
 	plugins: [
 		// {
-		// 	src: '~plugins/maps.client.js', 
+		// 	src: '~plugins/maps.client.js',
 		// 	mode: 'client', //名称中已经声明
 		// }
 		'~plugins/maps.client.js',
 		'~plugins/dataApi.js'
-	]
+  ],
+  modules: [
+    ['~/modules/test', { message: 'myModule!!!!'}],
+    '~/modules/test2'
+  ]
 }
