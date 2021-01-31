@@ -33,16 +33,16 @@ export default {
         console.log('asyncData')
         const responses = await Promise.all([
           $dataApi.getHome(params.id),
-          dataApi.getReviewsByHomeId(params.id),
+          $dataApi.getReviewsByHomeId(params.id),
           $dataApi.getReviewsByHomeId(params.id),
         ])
 
-        const badResponse = responses.find((response) => !respomse.ok);
+        const badResponse = responses.find((response) => !response.ok);
         if(badResponse)  return error({ statusCode: badResponse.status, message: badResponse.statusText});
         return {
             home: responses[0].json,
             reviews: responses[1].json.hits,
-            user: userResponse[2].json.htis[0]
+            user: responses[2].json.hits[0]
         }
     }
 }
