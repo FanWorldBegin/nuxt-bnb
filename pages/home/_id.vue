@@ -13,15 +13,10 @@
     <div v-for="review in reviews" :key="review.objectID">
         <div><img :src="review.reviewer.image" alt=""></div>
         <div>{{ review.reviewer.name }}</div>
-        <div>{{ formateDate(review.date) }}</div>
-        <ShortText :text="review.comment" :target="150"></ShortText>
+        <div>{{ review.date }}</div>
+        <div>{{ review.comment }}</div>
     </div>
-    <img :src="user.image" alt="">
-    {{ user.name }} <br/>
-    {{ formateDate(user.joined )}} <br/>
-    {{ user.reviewCount }} <br/>
-    {{ user.description }} <br/>
-  </div>
+    </div>
 </template>
 <script>
 export default {
@@ -36,29 +31,19 @@ export default {
 
     async asyncData({ params, $dataApi, error }){
         console.log('asyncData')
-        const homeResponse = await $dataApi.getHome(params.id);
-        if(!homeResponse.ok) return error({ statusCode: homeResponse.status, message: homeResponse.statusText});
+        const responses = await Promise.all([
+          $dataApi.getHome(params.id),
+          dataApi.getReviewsByHomeId(params.id),
+          $dataApi.getReviewsByHomeId(params.id),
+        ])
 
-        const reviewResponse = await $dataApi.getReviewsByHomeId(params.id);
-        if(!reviewResponse.ok) return error({ statusCode: reviewResponse.status, message: reviewResponse.statusText})
-
-
-        const userResponse = await $dataApi.getUserByHomeId(params.id);
-        if(!userResponse.ok) return error({ statusCode: userResponse.status, message: userResponse.statusText})
+        const badResponse = responses.find((response) => !respomse.ok);
+        if(badResponse)  return error({ statusCode: badResponse.status, message: badResponse.statusText});
         return {
-            home: homeResponse.json,
-            reviews: reviewResponse.json.hits,
-            user: userResponse.json.hits[0],
+            home: responses[0].json,
+            reviews: responses[1].json.hits,
+            user: userResponse[2].json.htis[0]
         }
-    },
-
-    methods: {
-      formateDate(dataStr) {
-        const date = new Date(dataStr);
-        return date.toLocaleDateString(undefined, {month: 'long', year: 'numeric'})
-
-      }
-
     }
 }
 </script>
